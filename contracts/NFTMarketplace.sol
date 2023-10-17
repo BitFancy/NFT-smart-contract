@@ -9,7 +9,15 @@ contract NFTMarketplace is ERC721URIStorage {
     Counters.Counter private _nftIds;
     address payable contractOwner;
     uint256 public listingPrice = 10000000 wei;
-    
+
+    struct NFT {
+        uint256 id;
+        address payable contractAddress;
+        address payable owner;
+        uint256 price;
+        bool isListed;
+    }
+
     constructor() ERC721("EducativeNFT", "EDUNFT") {
         contractOwner = payable(msg.sender);
     }
