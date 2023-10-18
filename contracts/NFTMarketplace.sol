@@ -18,6 +18,8 @@ contract NFTMarketplace is ERC721URIStorage {
         bool isListed;
     }
 
+    mapping(uint256 => NFT) private _idToNFT;
+
     constructor() ERC721("EducativeNFT", "EDUNFT") {
         contractOwner = payable(msg.sender);
     }
