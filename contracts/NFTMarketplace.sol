@@ -23,4 +23,12 @@ contract NFTMarketplace is ERC721URIStorage {
     constructor() ERC721("EducativeNFT", "EDUNFT") {
         contractOwner = payable(msg.sender);
     }
+
+    function mintNFT(string memory tokenURI, uint256 price) public payable {
+      _nftIds.increment();
+      uint256 newNftId = _nftIds.current();
+
+      _safeMint(msg.sender, newNftId);
+      _setTokenURI(newNftId, tokenURI);
+    }
 }
