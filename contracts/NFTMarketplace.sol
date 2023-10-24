@@ -25,10 +25,29 @@ contract NFTMarketplace is ERC721URIStorage {
     }
 
     function mintNFT(string memory tokenURI, uint256 price) public payable {
-      _nftIds.increment();
-      uint256 newNftId = _nftIds.current();
+        _nftIds.increment();
+        uint256 newNftId = _nftIds.current();
 
-      _safeMint(msg.sender, newNftId);
-      _setTokenURI(newNftId, tokenURI);
+        _safeMint(msg.sender, newNftId);
+        _setTokenURI(newNftId, tokenURI);
+
+        approve(address(this), newNftId);
+
+        (bool transferFeeSuccess, ) = payable(contractOwner).call{
+            value: listingPrice
+        }("");
+
+        require(
+            transferFeeSuccess,
+            "Failed to transfer listing fee to the owner"
+        );
+
+        _idToNFT[newNftId] = NFT(
+            newNftId,
+            payable(address(this)),
+            payable(msg.sender),
+            price,
+            true
+        );
     }
 }
