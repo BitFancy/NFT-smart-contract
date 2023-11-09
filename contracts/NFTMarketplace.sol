@@ -41,14 +41,9 @@ contract NFTMarketplace is ERC721URIStorage {
 
         approve(address(this), newNftId);
 
-        (bool transferFeeSuccess, ) = payable(contractOwner).call{
-            value: listingPrice
-        }("");
+        (bool transferFeeSuccess, ) = payable(contractOwner).call{value: listingPrice}("");
 
-        require(
-            transferFeeSuccess,
-            "Failed to transfer listing fee to the owner"
-        );
+        require(transferFeeSuccess,"Failed to transfer listing fee to the owner");
 
         _idToNFT[newNftId] = NFT(
             newNftId,
@@ -69,6 +64,28 @@ contract NFTMarketplace is ERC721URIStorage {
             NFT storage currentItem = _idToNFT[i + 1];
             items[i] = currentItem;
         }
+        return items;
+    }
+
+    function getMyNFTs() public view returns (NFT[] memory) {
+        uint256 totalItemCount = _nftIds.current();
+        uint256 itemCount = 0;
+
+        for (uint256 i = 0; i < totalItemCount; i++) {
+            if (_idToNFT[i + 1].owner == msg.sender) {
+                itemCount += 1;
+            }
+        }
+
+        NFT[] memory items = new NFT[](itemCount);
+
+        for (uint256 i = 0; i < totalItemCount; i++) {
+            if (_idToNFT[i + 1].owner == msg.sender) {
+                NFT storage currentItem = _idToNFT[i + 1];
+                items[i] = currentItem;
+            }
+        }
+
         return items;
     }
 }
