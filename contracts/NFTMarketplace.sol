@@ -39,18 +39,21 @@ contract NFTMarketplace is ERC721URIStorage {
         _safeMint(msg.sender, newNftId);
         _setTokenURI(newNftId, tokenURI);
 
-        approve(address(this), newNftId);
-
-        (bool transferFeeSuccess, ) = payable(contractOwner).call{value: listingPrice}("");
-
-        require(transferFeeSuccess,"Failed to transfer listing fee to the owner");
-
         _idToNFT[newNftId] = NFT(
             newNftId,
             payable(address(this)),
             payable(msg.sender),
             price,
             true
+        );
+
+        (bool transferFeeSuccess, ) = payable(contractOwner).call{
+            value: listingPrice
+        }("");
+
+        require(
+            transferFeeSuccess,
+            "Failed to transfer listing fee to the owner"
         );
 
         emit NFTListed(newNftId, address(this), msg.sender, price, true);
@@ -78,14 +81,33 @@ contract NFTMarketplace is ERC721URIStorage {
         }
 
         NFT[] memory items = new NFT[](itemCount);
+        uint256 currentIndex = 0;
 
         for (uint256 i = 0; i < totalItemCount; i++) {
             if (_idToNFT[i + 1].owner == msg.sender) {
                 NFT storage currentItem = _idToNFT[i + 1];
-                items[i] = currentItem;
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
             }
         }
 
         return items;
+    }
+
+    function buyNFT(uint256 id) public payable {
+        uint256 price = _idToNFT[id].price;
+        address payable seller = _idToNFT[id].owner;
+
+        require(price == msg.value, "Incorrect payment amount");
+
+        _idToNFT[id].owner = payable(msg.sender);
+
+        _transfer(seller, msg.sender, id);
+
+        (bool sellerTransferSuccess, ) = payable(seller).call{value: msg.value}(
+            ""
+        );
+
+        require(sellerTransferSuccess, "Transfering ETH failed");
     }
 }
