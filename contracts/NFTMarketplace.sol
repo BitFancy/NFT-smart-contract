@@ -44,9 +44,14 @@ contract NFTMarketplace is ERC721URIStorage {
             price
         );
 
-        (bool transferFeeSuccess, ) = payable(contractOwner).call{ value: listingPrice }("");
+        (bool transferFeeSuccess, ) = payable(contractOwner).call{
+            value: listingPrice
+        }("");
 
-        require(transferFeeSuccess,"Failed to transfer listing fee to the owner");
+        require(
+            transferFeeSuccess,
+            "Failed to transfer listing fee to the owner"
+        );
 
         emit NFTListed(newNftId, address(this), msg.sender, price);
     }
@@ -59,7 +64,7 @@ contract NFTMarketplace is ERC721URIStorage {
             NFT storage currentItem = _idToNFT[i + 1];
             items[i] = currentItem;
         }
-        
+
         return items;
     }
 }
