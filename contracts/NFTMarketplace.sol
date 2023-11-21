@@ -15,7 +15,6 @@ contract NFTMarketplace is ERC721URIStorage {
         address payable contractAddress;
         address payable owner;
         uint256 price;
-        bool isListed;
     }
 
     mapping(uint256 => NFT) private _idToNFT;
@@ -31,7 +30,12 @@ contract NFTMarketplace is ERC721URIStorage {
         _safeMint(msg.sender, newNftId);
         _setTokenURI(newNftId, tokenURI);
 
-        approve(address(this), newNftId);
+        _idToNFT[newNftId] = NFT(
+            newNftId,
+            payable(address(this)),
+            payable(msg.sender),
+            price
+        );
 
         (bool transferFeeSuccess, ) = payable(contractOwner).call{
             value: listingPrice
@@ -40,14 +44,6 @@ contract NFTMarketplace is ERC721URIStorage {
         require(
             transferFeeSuccess,
             "Failed to transfer listing fee to the owner"
-        );
-
-        _idToNFT[newNftId] = NFT(
-            newNftId,
-            payable(address(this)),
-            payable(msg.sender),
-            price,
-            true
         );
     }
 }
