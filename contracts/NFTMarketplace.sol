@@ -15,15 +15,13 @@ contract NFTMarketplace is ERC721URIStorage {
         address payable contractAddress;
         address payable owner;
         uint256 price;
-        bool isListed;
     }
 
     event NFTListed(
         uint256 indexed id,
         address contractAddress,
         address owner,
-        uint256 price,
-        bool isListed
+        uint256 price
     );
 
     mapping(uint256 => NFT) private _idToNFT;
@@ -55,14 +53,6 @@ contract NFTMarketplace is ERC721URIStorage {
             "Failed to transfer listing fee to the owner"
         );
 
-        _idToNFT[newNftId] = NFT(
-            newNftId,
-            payable(address(this)),
-            payable(msg.sender),
-            price,
-            true
-        );
-
-        emit NFTListed(newNftId, address(this), msg.sender, price, true);
+        emit NFTListed(newNftId, address(this), msg.sender, price);
     }
 }
