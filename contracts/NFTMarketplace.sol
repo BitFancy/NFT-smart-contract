@@ -39,7 +39,12 @@ contract NFTMarketplace is ERC721URIStorage {
         _safeMint(msg.sender, newNftId);
         _setTokenURI(newNftId, tokenURI);
 
-        approve(address(this), newNftId);
+        _idToNFT[newNftId] = NFT(
+            newNftId,
+            payable(address(this)),
+            payable(msg.sender),
+            price
+        );
 
         (bool transferFeeSuccess, ) = payable(contractOwner).call{
             value: listingPrice
