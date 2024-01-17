@@ -46,6 +46,18 @@ To get started with the course project code, follow these steps:
 
 4. To run the unit test file, open a terminal and run the following command:
 
-    ```
+    ```shell
     npx hardhat test
+    ```
+
+5. Open a new terminal and run the following command to start the local Hardhat node:
+
+    ```shell
+    npx hardhat node --hostname 0.0.0.0 --port 3000
+    ```
+
+6. Open another terminal and run the following command to deploy the smart contract on the local Hardhat node:
+
+    ```shell
+    npx hardhat run scripts/deploy.js --network localhost
     ```
