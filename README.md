@@ -18,18 +18,6 @@ The key features that this project will contain are as follows:
 
 - **Retrieving:** Users can retrieve a list of all NFTs available on the marketplace and view their personal collection of NFTs.
 
-## Learning Objectives
-
-- Develop Ethereum smart contracts using Hardhat and OpenZeppelin.
-- List NFTs in the marketplace for sale.
-- Mint and trade NFTs.
-- Deploy smart contracts.
-
-## Table of Contents
-
-- [Installation](#installation)
-- [Usage](#usage)
-
 ## Installation
 
 To get started with the course project code, follow these steps:
